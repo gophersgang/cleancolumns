@@ -3,7 +3,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-package slug
+package cleancolumns
 
 func init() {
 	// Merge language subs with the default one
@@ -18,10 +18,10 @@ var defaultSub = map[rune]string{
 	'"':  "",
 	'\'': "",
 	'’':  "",
-	'‒':  "-", // figure dash
-	'–':  "-", // en dash
-	'—':  "-", // em dash
-	'―':  "-", // horizontal bar
+	'‒':  "_", // figure dash
+	'–':  "_", // en dash
+	'—':  "_", // em dash
+	'―':  "_", // horizontal bar
 }
 
 var deSub = map[rune]string{

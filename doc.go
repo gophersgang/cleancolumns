@@ -4,7 +4,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /*
-Package slug generate slug from unicode string, URL-friendly slugify with
+Package cleancolumns generates table column names from unicode string, with
 multiple languages support.
 
 Example:
@@ -12,32 +12,32 @@ Example:
 	package main
 
 	import(
-		"github.com/gosimple/slug"
+		"github.com/gophersgang/cleancolumns"
 		"fmt"
 	)
 
 	func main () {
-		text := slug.Make("Hellö Wörld хелло ворлд")
-		fmt.Println(text) // Will print hello-world-khello-vorld
+		text := cleancolumns.Make("Hellö Wörld хелло ворлд")
+		fmt.Println(text) // Will print hello_world_khello_vorld
 
-		someText := slug.Make("影師")
-		fmt.Println(someText) // Will print: ying-shi
+		someText := cleancolumns.Make("影師")
+		fmt.Println(someText) // Will print: ying_shi
 
-		enText := slug.MakeLang("This & that", "en")
-		fmt.Println(enText) // Will print 'this-and-that'
+		enText := cleancolumns.MakeLang("This & that", "en")
+		fmt.Println(enText) // Will print 'this_and_that'
 
-		deText := slug.MakeLang("Diese & Dass", "de")
-		fmt.Println(deText) // Will print 'diese-und-dass'
+		deText := cleancolumns.MakeLang("Diese & Dass", "de")
+		fmt.Println(deText) // Will print 'diese_und_dass'
 
-		slug.CustomSub = map[string]string{
+		cleancolumns.CustomSub = map[string]string{
 			"water": "sand",
 		}
-		textSub := slug.Make("water is hot")
-		fmt.Println(textSub) // Will print 'sand-is-hot'
+		textSub := cleancolumns.Make("water is hot")
+		fmt.Println(textSub) // Will print 'sand_is_hot'
 	}
 
 Requests or bugs?
 
-https://github.com/gosimple/slug/issues
+https://github.com/gophersgang/cleancolumns/issues
 */
-package slug
+package cleancolumns

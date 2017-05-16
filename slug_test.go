@@ -3,7 +3,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-package slug
+package cleancolumns
 
 import (
 	"testing"
@@ -17,10 +17,10 @@ func TestSlugMake(t *testing.T) {
 		want string
 	}{
 		{"DOBROSLAWZYBORT", "dobroslawzybort"},
-		{"Dobroslaw Zybort", "dobroslaw-zybort"},
-		{"  Dobroslaw     Zybort  ?", "dobroslaw-zybort"},
-		{"Dobrosław Żybort", "dobroslaw-zybort"},
-		{"Ala ma 6 kotów.", "ala-ma-6-kotow"},
+		{"Dobroslaw Zybort", "dobroslaw_zybort"},
+		{"  Dobroslaw     Zybort  ?", "dobroslaw_zybort"},
+		{"Dobrosław Żybort", "dobroslaw_zybort"},
+		{"Ala ma 6 kotów.", "ala_ma_6_kotow"},
 
 		{"áÁàÀãÃâÂäÄąĄą̊Ą̊", "aaaaaaaaaaaaaa"},
 		{"ćĆĉĈçÇ", "cccccc"},
@@ -34,19 +34,19 @@ func TestSlugMake(t *testing.T) {
 		{"y̨Y̨", "yy"},
 		{"źŹżŹ", "zzzz"},
 		{"·/,:;`˜'\"", ""},
-		{"2000–2013", "2000-2013"},
-		{"style—not", "style-not"},
+		{"2000–2013", "2000_2013"},
+		{"style—not", "style_not"},
 		{"test_slug", "test_slug"},
 		{"Æ", "ae"},
-		{"Ich heiße", "ich-heisse"},
+		{"Ich heiße", "ich_heisse"},
 
-		{"This & that", "this-and-that"},
-		{"fácil €", "facil-eu"},
+		{"This & that", "this_and_that"},
+		{"fácil €", "facil_eu"},
 		{"smile ☺", "smile"},
-		{"Hellö Wörld хелло ворлд", "hello-world-khello-vorld"},
-		{"\"C'est déjà l’été.\"", "cest-deja-lete"},
-		{"jaja---lol-méméméoo--a", "jaja-lol-mememeoo-a"},
-		{"影師", "ying-shi"},
+		{"Hellö Wörld хелло ворлд", "hello_world_khello_vorld"},
+		{"\"C'est déjà l’été.\"", "cest_deja_lete"},
+		{"jaja---lol-méméméoo--a", "jaja_lol_mememeoo_a"},
+		{"影師", "ying_shi"},
 	}
 
 	for index, st := range testCases {
@@ -65,11 +65,11 @@ func TestSlugMakeLang(t *testing.T) {
 		in   string
 		want string
 	}{
-		{"en", "This & that", "this-and-that"},
-		{"de", "This & that", "this-und-that"},
-		{"pl", "This & that", "this-i-that"},
-		{"es", "This & that", "this-y-that"},
-		{"test", "This & that", "this-and-that"}, // unknown lang, fallback to "en"
+		{"en", "This & that", "this_and_that"},
+		{"de", "This & that", "this_und_that"},
+		{"pl", "This & that", "this_i_that"},
+		{"es", "This & that", "this_y_that"},
+		{"test", "This & that", "this_and_that"}, // unknown lang, fallback to "en"
 	}
 
 	for index, smlt := range testCases {
@@ -89,10 +89,10 @@ func TestSlugMakeUserSubstituteLang(t *testing.T) {
 		in   string
 		want string
 	}{
-		{map[string]string{"'": " "}, "en", "That's great", "that-s-great"},
-		{map[string]string{"&": "or"}, "en", "This & that", "this-or-that"},                   // by default "&" => "and"
-		{map[string]string{"&": "or"}, "de", "This & that", "this-or-that"},                   // by default "&" => "und"
-		{map[string]string{"&": "or", "@": "the"}, "de", "@ This & that", "the-this-or-that"}, // by default "&" => "und", "@" => "an"
+		{map[string]string{"'": " "}, "en", "That's great", "that_s_great"},
+		{map[string]string{"&": "or"}, "en", "This & that", "this_or_that"},                   // by default "&" => "and"
+		{map[string]string{"&": "or"}, "de", "This & that", "this_or_that"},                   // by default "&" => "und"
+		{map[string]string{"&": "or", "@": "the"}, "de", "@ This & that", "the_this_or_that"}, // by default "&" => "und", "@" => "an"
 	}
 
 	for index, smust := range testCases {
@@ -116,9 +116,9 @@ func TestSlugMakeSubstituteOrderLang(t *testing.T) {
 		in   string
 		want string
 	}{
-		{map[rune]string{'o': "left"}, map[string]string{"o": "right"}, "o o", "left-left"},
-		{map[rune]string{'o': "left", 'a': "r"}, map[string]string{"o": "right"}, "o a o", "left-r-left"},
-		{map[rune]string{'o': "left"}, map[string]string{"o": "right", "a": "r"}, "a o a o", "r-left-r-left"},
+		{map[rune]string{'o': "left"}, map[string]string{"o": "right"}, "o o", "left_left"},
+		{map[rune]string{'o': "left", 'a': "r"}, map[string]string{"o": "right"}, "o a o", "left_r_left"},
+		{map[rune]string{'o': "left"}, map[string]string{"o": "right", "a": "r"}, "a o a o", "r_left_r_left"},
 		{map[rune]string{'&': "down"}, map[string]string{"&": "up"}, "&", "down"},
 	}
 
@@ -187,10 +187,10 @@ func TestSlugMakeSmartTruncate(t *testing.T) {
 		want      string
 	}{
 		{"DOBROSLAWZYBORT", 100, "dobroslawzybort"},
-		{"Dobroslaw Zybort", 100, "dobroslaw-zybort"},
+		{"Dobroslaw Zybort", 100, "dobroslaw_zybort"},
 		{"Dobroslaw Zybort", 12, "dobroslaw"},
 		{"  Dobroslaw     Zybort  ?", 12, "dobroslaw"},
-		{"Ala ma 6 kotów.", 10, "ala-ma-6"},
+		{"Ala ma 6 kotów.", 10, "ala_ma_6"},
 		{"Dobrosław Żybort", 5, "dobro"},
 	}
 

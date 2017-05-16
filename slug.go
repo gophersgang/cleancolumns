@@ -3,7 +3,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-package slug
+package cleancolumns
 
 import (
 	"bytes"
@@ -28,8 +28,9 @@ var (
 	// after MaxLength.
 	MaxLength int
 
-	regexpNonAuthorizedChars = regexp.MustCompile("[^a-z0-9-_]")
-	regexpMultipleDashes     = regexp.MustCompile("-+")
+	regexpNonAuthorizedChars  = regexp.MustCompile("[^a-z0-9-_]")
+	regexpMultipleDashes      = regexp.MustCompile("-+")
+	regexpMultipleUnderscores = regexp.MustCompile("_+")
 )
 
 //=============================================================================
@@ -70,9 +71,10 @@ func MakeLang(s string, lang string) (slug string) {
 	slug = strings.ToLower(slug)
 
 	// Process all remaining symbols
-	slug = regexpNonAuthorizedChars.ReplaceAllString(slug, "-")
-	slug = regexpMultipleDashes.ReplaceAllString(slug, "-")
-	slug = strings.Trim(slug, "-")
+	slug = regexpNonAuthorizedChars.ReplaceAllString(slug, "_")
+	slug = regexpMultipleDashes.ReplaceAllString(slug, "_")
+	slug = regexpMultipleUnderscores.ReplaceAllString(slug, "_")
+	slug = strings.Trim(slug, "_")
 
 	if MaxLength > 0 {
 		slug = smartTruncate(slug)
@@ -118,7 +120,7 @@ func smartTruncate(text string) string {
 	}
 
 	var truncated string
-	words := strings.SplitAfter(text, "-")
+	words := strings.SplitAfter(text, "_")
 	// If MaxLength is smaller than length of the first word return word
 	// truncated after MaxLength.
 	if len(words[0]) > MaxLength {
@@ -131,5 +133,5 @@ func smartTruncate(text string) string {
 			break
 		}
 	}
-	return strings.Trim(truncated, "-")
+	return strings.Trim(truncated, "_")
 }
