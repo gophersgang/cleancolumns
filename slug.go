@@ -14,9 +14,19 @@ import (
 	"github.com/rainycape/unidecode"
 )
 
+// SubStruct represents a string substitution
+type SubStruct struct {
+	In  string
+	Out string
+}
+
 var (
 	// CustomSub stores custom substitution map
 	CustomSub map[string]string
+
+	// CustomSubOrdered stores custom substitution slice, to have some control for the order of replacement
+	CustomSubOrdered []SubStruct
+
 	// CustomRuneSub stores custom rune substitution map
 	CustomRuneSub map[rune]string
 
@@ -49,6 +59,7 @@ func MakeLang(s string, lang string) (slug string) {
 	// Custom substitutions
 	// Always substitute runes first
 	slug = SubstituteRune(slug, CustomRuneSub)
+	slug = SubstituteOrdered(slug, CustomSubOrdered)
 	slug = Substitute(slug, CustomSub)
 
 	// Process string with selected substitution language
@@ -98,6 +109,15 @@ func Substitute(s string, sub map[string]string) (buf string) {
 		buf = strings.Replace(buf, key, sub[key], -1)
 	}
 	return
+}
+
+// SubstituteOrdered has controlled order during replacements
+func SubstituteOrdered(s string, sub []SubStruct) (buf string) {
+	buf = s
+	for _, subItem := range sub {
+		buf = strings.Replace(buf, subItem.In, subItem.Out, -1)
+	}
+	return buf
 }
 
 // SubstituteRune substitutes string chars with provided rune
