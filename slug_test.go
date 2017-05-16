@@ -136,6 +136,42 @@ func TestSlugMakeSubstituteOrderLang(t *testing.T) {
 	}
 }
 
+func TestSlugCustomSubOrdered(t *testing.T) {
+	// Always substitute runes first
+	var testCases = []struct {
+		sSub  map[string]string
+		sSubO []SubStruct
+		in    string
+		want  string
+	}{
+		{
+			map[string]string{">": "BBB"},
+			[]SubStruct{
+				SubStruct{In: ">=", Out: "_gte_"},
+				SubStruct{In: ">", Out: "_gt_"},
+			},
+			">= 2000", "gte_2000",
+		},
+		{
+			map[string]string{">": "BBB"},
+			[]SubStruct{
+				SubStruct{In: ">", Out: "_gt_"},
+				SubStruct{In: ">=", Out: "_gte_"},
+			},
+			">= 2000", "gt_2000",
+		},
+	}
+
+	for index, smsot := range testCases {
+		CustomSubOrdered = smsot.sSubO
+		CustomSub = smsot.sSub
+		got := Make(smsot.in)
+		if got != smsot.want {
+			t.Errorf("%d. %#v; %#v; Make(%#v) = %#v; want %#v", index, smsot.sSub, smsot.sSubO, smsot.in, got, smsot.want)
+		}
+	}
+}
+
 func TestSubstituteLang(t *testing.T) {
 	var testCases = []struct {
 		cSub map[string]string
